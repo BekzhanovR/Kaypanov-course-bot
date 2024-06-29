@@ -124,7 +124,7 @@ async def process_view_users(callback_query: types.CallbackQuery):
     else:
         await bot.send_message(callback_query.from_user.id, "Siz admin emassiz!")
 
-@dp.message_handler(commands=['survey'])
+@dp.message_handler(commands=['boshla'])
 async def start_survey(message: types.Message):
     if await check_membership(message.from_user.id):
         await message.reply("Familiya, ismingizni kiriting:")
@@ -188,10 +188,12 @@ async def process_reason(message: types.Message, state: FSMContext):
                    (message.from_user.id, user_data['name'], user_data['phone'], user_data['age'], user_data['city'], user_data['business'], user_data['source'], user_data['course'], user_data['reason']))
     conn.commit()
     
-    video_btn = InlineKeyboardButton("Video darslarni ko'rish", url='https://t.me/+pqFnC79JPQxmNzAy')
+    inline_kb_video = InlineKeyboardMarkup(row_width=1)
+    inline_btn_video = InlineKeyboardButton('Video ko\'rish', url="https://t.me/+pqFnC79JPQxmNzAy")
+    inline_kb_video.add(inline_btn_video)
 
-    await message.reply(f"Rahmat! Ma'lumotlaringiz qabul qilindi:\n\n", reply_markup=video_btn)
     await state.finish()
+    await message.reply(f"Rahmat! Ma'lumotlaringiz qabul qilindi:\n\n", reply_markup=inline_kb_video)
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
