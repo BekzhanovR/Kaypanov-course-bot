@@ -11,7 +11,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 API_TOKEN = '7196404290:AAEfMsF19JDtW_jYKu93Wth4gAoXfEO5G_U'
 CHANNEL_ID = '-1001947869008'
-ADMIN_USER_ID = 1418543797  # Admin foydalanuvchi ID'sini bu yerga yozing
+ADMIN_USER_ID = 1418543797  
 
 logging.basicConfig(level=logging.INFO)
 
