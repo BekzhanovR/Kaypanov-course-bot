@@ -1,6 +1,5 @@
 import logging
 import sqlite3
-import pandas as pd
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
@@ -49,18 +48,18 @@ async def check_membership(user_id):
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     inline_kb = InlineKeyboardMarkup(row_width=1)
-    inline_btn1 = InlineKeyboardButton('Kanalga obuna bo\'ling', url=f'https://t.me/azamatkaypanov')
-    inline_btn2 = InlineKeyboardButton('Obuna bo\'ldim', callback_data='check_sub')
+    inline_btn1 = InlineKeyboardButton('Kanalǵa aǵza bolıń', url=f'https://t.me/azamatkaypanov')
+    inline_btn2 = InlineKeyboardButton('Aǵza boldım', callback_data='check_sub')
     inline_kb.add(inline_btn1, inline_btn2)
     
     if message.from_user.id == ADMIN_USER_ID:
-        await message.reply("Salom admin! Siz admin funksiyalaridan foydalanishingiz mumkin.", reply_markup=admin_keyboard())
+        await message.reply("Sálem admin! Siz admin funksiyalarınan paydalanıwıńız múmkin.", reply_markup=admin_keyboard())
     else:
-        await message.reply("Salom! Botimizga xush kelibsiz. Botdan foydalanish uchun avval kanalimizga obuna bo'ling.", reply_markup=inline_kb)
+        await message.reply("Sálem! botımızǵa xosh kelipsiz. Botdan paydalanıw ushın aldın kanalımızǵa aǵza bolıń.", reply_markup=inline_kb)
 
 def admin_keyboard():
     admin_kb = InlineKeyboardMarkup(row_width=1)
-    admin_btn1 = InlineKeyboardButton('Foydalanuvchilar ro\'yxatini ko\'rish', callback_data='view_users')
+    admin_btn1 = InlineKeyboardButton('Paydalanıwshılar dizimin kóriw', callback_data='view_users')
     admin_kb.add(admin_btn1)
     return admin_kb
 
@@ -69,10 +68,10 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     if await check_membership(user_id):
         await bot.answer_callback_query(callback_query.id)
-        await bot.send_message(callback_query.from_user.id, "Kanalga obuna bo'lganingiz uchun rahmat! Sorovnomani boshlash uchun /boshla buyrug'ini yuboring.")
+        await bot.send_message(callback_query.from_user.id, "Kanalǵa aǵza bolǵanıńız ushın raxmet! Sorawnamanı baslaw ushın /basla buyrıǵın jiberiń.")
     else:
         await bot.answer_callback_query(callback_query.id)
-        await bot.send_message(callback_query.from_user.id, "Siz hali kanalga obuna bo'lmadingiz. Iltimos, avval kanalga obuna bo'ling.")
+        await bot.send_message(callback_query.from_user.id, "Siz ele kanalǵa aǵza bolmadıńız. Iltimas, aldın kanalǵa aǵza bolıń.")
 
 @dp.callback_query_handler(lambda c: c.data == 'view_users')
 async def process_view_users(callback_query: types.CallbackQuery):
@@ -80,30 +79,31 @@ async def process_view_users(callback_query: types.CallbackQuery):
     if user_id == ADMIN_USER_ID:
         cursor.execute("SELECT * FROM survey")
         rows = cursor.fetchall()
-        response = "Foydalanuvchilar ro'yxati:\n"
+        response = "Paydalanıwshılar dizimi:\n"
         for row in rows:
-            response += f"ID: {row[0]} \n, Familya ismi: {row[2]} \n, Telefon raqami: {row[3]}\n"
+            response += f"ID: {row[0]} \n, Familya atı: {row[2]} \n, Telefon nomer: {row[3]}\n"
         await bot.send_message(callback_query.from_user.id, response)
     else:
-        await bot.send_message(callback_query.from_user.id, "Siz admin emassiz!")
+        await bot.send_message(callback_query.from_user.id, "Siz admin emessiz!")
 
-@dp.message_handler(commands=['boshla'])
+
+@dp.message_handler(commands=['basla'])
 async def start_survey(message: types.Message):
     if await check_membership(message.from_user.id):
-        await message.reply("Familiya, ismingizni kiriting:")
+        await message.reply("Familiya, atıńızdi kiritiń:")
         await SurveyStates.name.set()
     else:
         inline_kb = InlineKeyboardMarkup(row_width=1)
-        inline_btn1 = InlineKeyboardButton('Kanalga obuna bo\'ling', url=f'https://t.me/{CHANNEL_ID}')
-        inline_btn2 = InlineKeyboardButton('Obuna bo\'ldim', callback_data='check_sub')
+        inline_btn1 = InlineKeyboardButton('Kanalǵa aǵza bolıń', url=f'https://t.me/{CHANNEL_ID}')
+        inline_btn2 = InlineKeyboardButton('Aǵza boldım', callback_data='check_sub')
         inline_kb.add(inline_btn1, inline_btn2)
         
-        await message.reply("Iltimos, avval kanalimizga obuna bo'ling.", reply_markup=inline_kb)
+        await message.reply("Iltimas, aldın kanalımızǵa aǵza bolıń.", reply_markup=inline_kb)
 
 @dp.message_handler(state=SurveyStates.name)
 async def process_name(message: types.Message, state: FSMContext):
     await state.update_data(name=message.text)
-    await message.reply("Telefon raqamingizni kiriting:")
+    await message.reply("Familiya, atıńızdi kiritiń:")
     await SurveyStates.next()
 
 @dp.message_handler(state=SurveyStates.phone)
@@ -116,11 +116,11 @@ async def process_phone(message: types.Message, state: FSMContext):
     conn.commit()
     
     inline_kb_video = InlineKeyboardMarkup(row_width=1)
-    inline_btn_video = InlineKeyboardButton('Video ko\'rish', url="https://t.me/+pqFnC79JPQxmNzAy")
+    inline_btn_video = InlineKeyboardButton('Video kóriw', url="https://t.me/+pqFnC79JPQxmNzAy")
     inline_kb_video.add(inline_btn_video)
 
     await state.finish()
-    await message.reply(f"Rahmat! Ma'lumotlaringiz qabul qilindi:\n\n", reply_markup=inline_kb_video)
+    await message.reply(f"Raxmet!  Maǵlıwmatlar qabıl qılındı:\n\n", reply_markup=inline_kb_video)
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
